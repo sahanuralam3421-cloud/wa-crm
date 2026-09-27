@@ -4,9 +4,16 @@ import { cookies } from 'next/headers'
 export async function createClient() {
   const cookieStore = await cookies()
 
+  const url =
+    process.env.NEXT_PUBLIC_SUPABASE_URL ||
+    'https://gzterzqlzbtrcsklpkzk.supabase.co'
+  const key =
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6dGVyenFsemJ0cmNza2xwa3prIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA1MjE0ODgsImV4cCI6MjEwNjA5NzQ4OH0.9hPdYLT-AC7RvJBURxBPI3f5iWFXUk6uGzER6-OgW4Y'
+
   return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    url,
+    key,
     {
       cookies: {
         getAll() {
