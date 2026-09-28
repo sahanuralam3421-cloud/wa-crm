@@ -26,13 +26,24 @@ import type {
   ResponseTimeSummary,
 } from '@/lib/dashboard/types'
 
+import dynamic from 'next/dynamic'
 import { MetricCard } from '@/components/dashboard/metric-card'
 import { SkeletonCard } from '@/components/dashboard/skeleton'
 import { QuickActions } from '@/components/dashboard/quick-actions'
-import { ConversationsChart } from '@/components/dashboard/conversations-chart'
-import { PipelineDonut } from '@/components/dashboard/pipeline-donut'
-import { ResponseTimeChart } from '@/components/dashboard/response-time-chart'
 import { ActivityFeed } from '@/components/dashboard/activity-feed'
+
+const ConversationsChart = dynamic(
+  () => import('@/components/dashboard/conversations-chart').then((mod) => mod.ConversationsChart),
+  { ssr: false, loading: () => <SkeletonCard className="h-[340px]" /> }
+)
+const PipelineDonut = dynamic(
+  () => import('@/components/dashboard/pipeline-donut').then((mod) => mod.PipelineDonut),
+  { ssr: false, loading: () => <SkeletonCard className="h-[340px]" /> }
+)
+const ResponseTimeChart = dynamic(
+  () => import('@/components/dashboard/response-time-chart').then((mod) => mod.ResponseTimeChart),
+  { ssr: false, loading: () => <SkeletonCard className="h-[340px]" /> }
+)
 
 import { useTranslations } from 'next-intl'
 

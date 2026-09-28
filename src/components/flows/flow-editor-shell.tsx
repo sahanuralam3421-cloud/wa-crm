@@ -26,10 +26,22 @@
 
 import { useEffect, useState } from "react";
 import { GitFork, List } from "lucide-react";
+import dynamic from "next/dynamic";
 
 import { FlowBuilder } from "./flow-builder";
-import { FlowCanvas } from "./flow-canvas";
 import { FlowEditorProvider } from "./flow-editor-state";
+
+const FlowCanvas = dynamic(
+  () => import("./flow-canvas").then((mod) => mod.FlowCanvas),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex h-full w-full items-center justify-center bg-background/50">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+      </div>
+    ),
+  }
+);
 import { EditorHeader } from "./header";
 import { ValidationPanel } from "./validation-panel";
 import { NODE_META, nodeColors, type NodeType } from "./shared";

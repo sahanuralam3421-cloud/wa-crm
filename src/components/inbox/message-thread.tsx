@@ -39,9 +39,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import dynamic from "next/dynamic";
 import { MessageBubble } from "./message-bubble";
 import { MessageActions } from "./message-actions";
-import { MediaLightbox } from "./media-lightbox";
 import { collectMediaGallery } from "@/lib/media/gallery";
 import {
   MessageComposer,
@@ -49,8 +49,16 @@ import {
   type SendMediaPayload,
 } from "./message-composer";
 import { deleteAccountMedia } from "@/lib/storage/upload-media";
-import { TemplatePicker } from "./template-picker";
 import { AiThreadBanner } from "./ai-thread-banner";
+
+const MediaLightbox = dynamic(
+  () => import("./media-lightbox").then((mod) => mod.MediaLightbox),
+  { ssr: false }
+);
+const TemplatePicker = dynamic(
+  () => import("./template-picker").then((mod) => mod.TemplatePicker),
+  { ssr: false }
+);
 import { buildReplyPreview } from "./reply-quote";
 import { renderTemplateBody } from "@/lib/whatsapp/template-body";
 import { contactHandle } from "@/lib/whatsapp/wa-identity";

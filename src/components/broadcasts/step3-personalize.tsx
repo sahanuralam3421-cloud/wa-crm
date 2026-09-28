@@ -271,6 +271,8 @@ export function Step3Personalize({
               <img
                 src={headerMediaUrl.trim()}
                 alt={t('personalize.headerPreviewAlt')}
+                loading="lazy"
+                decoding="async"
                 className="mt-3 max-h-40 rounded-lg border border-border object-contain"
               />
             )}

@@ -145,6 +145,8 @@ export function ContactSidebar({ contact }: ContactSidebarProps) {
                 <img
                   src={contact.avatar_url}
                   alt={displayName}
+                  loading="lazy"
+                  decoding="async"
                   className="h-16 w-16 rounded-full object-cover"
                 />
               ) : (

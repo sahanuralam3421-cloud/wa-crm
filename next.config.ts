@@ -69,6 +69,17 @@ const nextConfig: NextConfig = {
   // Harmless outside Docker: `next start` keeps working as before.
   output: "standalone",
 
+  images: {
+    formats: ["image/avif", "image/webp"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**.supabase.co",
+      },
+    ],
+    minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days cache for optimized images
+  },
+
   /**
    * Cross-origin dev access (Next.js 16).
    *

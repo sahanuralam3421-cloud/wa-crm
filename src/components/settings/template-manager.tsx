@@ -882,6 +882,8 @@ export function TemplateManager() {
                     <img
                       src={form.header_media_url}
                       alt="Header sample"
+                      loading="lazy"
+                      decoding="async"
                       className="max-h-28 rounded-md border border-border object-contain"
                     />
                   )}
