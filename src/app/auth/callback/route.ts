@@ -25,10 +25,45 @@ export async function GET(request: NextRequest) {
 
   const supabase = await createClient();
 
+  const getDestinationUrl = async (): Promise<string> => {
+    if (process.env.NEXT_PUBLIC_MAGIC_LINK_PASSWORD_STEP === "true") {
+      try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (user) {
+          const passwordSet = user.user_metadata?.password_set === true;
+          const createdAt = user.created_at
+            ? new Date(user.created_at).getTime()
+            : 0;
+          const isWithin24Hours = Date.now() - createdAt < 24 * 60 * 60 * 1000;
+
+          const providers: string[] = user.app_metadata?.providers || [];
+          const identities = user.identities || [];
+          const hasNonEmailIdentity =
+            providers.some((p: string) => p !== "email") ||
+            identities.some((i) => i.provider !== "email");
+
+          if (!passwordSet && isWithin24Hours && !hasNonEmailIdentity) {
+            const createPasswordUrl = new URL(`${origin}/create-password`);
+            createPasswordUrl.searchParams.set("next", next);
+            return createPasswordUrl.toString();
+          }
+        }
+      } catch (err) {
+        console.error("Error evaluating password setup step:", err);
+      }
+    }
+
+    return `${origin}${next}`;
+  };
+
   if (code) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
-      return NextResponse.redirect(`${origin}${next}`);
+      const destination = await getDestinationUrl();
+      return NextResponse.redirect(destination);
     }
     console.error("Auth callback code exchange error:", error.message);
   } else if (token_hash && type) {
@@ -37,7 +72,8 @@ export async function GET(request: NextRequest) {
       token_hash,
     });
     if (!error) {
-      return NextResponse.redirect(`${origin}${next}`);
+      const destination = await getDestinationUrl();
+      return NextResponse.redirect(destination);
     }
     console.error("Auth callback verifyOtp error:", error.message);
   }
